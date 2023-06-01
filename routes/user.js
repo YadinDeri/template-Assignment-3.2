@@ -52,7 +52,27 @@ router.get('/favorites', async (req,res,next) => {
   }
 });
 
+router.post('/createRecipe', async (req,res,next)=>{
+  try{
+    const user_id = req.session.user_id;
+    const recipe_id = req.body.recipeId;
+    const title = req.body.title;
+    const readyInMinutes = req.body.readyInMinutes;
+    const image = req.body.image;
+    const popularity = req.body.popularity;
+    const vegan = Number(req.body.vegan)
+    const vegetarian = Number(req.body.vegetarian);
+    const glutenFree = Number(req.body.glutenFree);
+    const ingredients = req.body.ingredients;
+    const instructions = req.body.instructions;
+    const numOfDishes = req.body.numOfDishes;
+    await user_utils.addNewRecipe(user_id,recipe_id,title,readyInMinutes,image,popularity,vegan,vegetarian,glutenFree,ingredients,instructions,numOfDishes);
+    res.status(200).send("The Recipe successfully added");
+  } catch(error){
+    next(error);
+  }
 
+})
 
 
 
