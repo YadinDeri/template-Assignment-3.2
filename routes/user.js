@@ -55,7 +55,7 @@ router.get('/favorites', async (req,res,next) => {
 router.post('/createRecipe', async (req,res,next)=>{
   try{
     const user_id = req.session.user_id;
-    const recipe_id = req.body.recipeId;
+    const recipe_id = req.body.recipe_id;
     const title = req.body.title;
     const readyInMinutes = req.body.readyInMinutes;
     const image = req.body.image;
