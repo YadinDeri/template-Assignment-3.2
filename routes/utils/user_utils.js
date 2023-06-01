@@ -13,7 +13,7 @@ async function getFavoriteRecipes(user_id) {
 
 async function Update_User_last_3_watch(user_id, recipe_id) {
     const DB_ans = await DButils.execQuery(`select * from user_last_3_watch where user_id='${user_id}'`);
-    if (DB_ans.length == 0) {
+    if (DB_ans.length === 0) {
         const History_Watch_R1 = recipe_id;
         const History_Watch_R2 = 0;
         const History_Watch_R3 = 0;
