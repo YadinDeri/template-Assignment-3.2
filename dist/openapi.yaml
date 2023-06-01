@@ -179,8 +179,8 @@ paths:
     get:
       tags:
         - users
-      summary: Return the IDs of all the favorite recipes that the user has marked as favorite.
-      description: Return the IDs of all the favorite recipes that the user has marked as favorite.
+      summary: Return the IDs of all the favorite recipes that the userID has marked as favorite.
+      description: Return the IDs of all the favorite recipes that the userID has marked as favorite.
       responses:
         "200":
           description: successful operation - return recipe IDs
@@ -192,12 +192,12 @@ paths:
                   $ref: '#/components/schemas/recipes'
         "500":
           description: error message
-  /users/Userfavorites:
+  /users/addFavoriteReciped/:recipeId:
     post:
       tags:
         - users
       summary: Marking a recipe as a favorite by the user.
-      description: "Marking a recipe as a favorite by the user., and add it in the favoriterecipes schema"
+      description: "Marking a recipe as a favorite by the user., and add it in the favorite recipes schema"
       parameters:
         - name: recipeId
           in: query

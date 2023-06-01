@@ -15,28 +15,52 @@ router.post("/Register", async (req, res, next) => {
             lastname: req.body.lastname,
             country: req.body.country,
             password: req.body.password,
+            confirmPassword: req.body.confirmPassword,
             email: req.body.email,
             profilePic: req.body.profilePic
-        }
+        };
         let users = [];
         users = await DButils.execQuery("SELECT username from users");
 
-        if (users.find((x) => x.username === user_details.username))
+        if (users.find((x) => x.username === user_details.username)) {
             throw { status: 409, message: "Username taken" };
+        }
 
         // Check username
-        if (!/^[a-zA-Z]{3,8}$/.test(user_details.username))
-            throw { status: 400, message: "Username must be between 3 and 8 characters long and contain letters only" };
+        if (!/^[a-zA-Z]{3,8}$/.test(user_details.username)) {
+            throw {
+                status: 400,
+                message:
+                    "Username must be between 3 and 8 characters long and contain letters only"
+            };
+        }
 
         // Check password
-        if (!/(?=.*\d)(?=.*[@#$%])[0-9a-zA-Z@#$%]{5,10}$/.test(user_details.password))
-            throw { status: 400, message: "Password must be between 5 and 10 characters long and contain at least one number and one special character (@, #, $, %)" };
+        if (
+            !/(?=.*\d)(?=.*[@#$%])[0-9a-zA-Z@#$%]{5,10}$/.test(user_details.password)
+        ) {
+            throw {
+                status: 400,
+                message:
+                    "Password must be between 5 and 10 characters long and contain at least one number and one special character (@, #, $, %)"
+            };
+        }
+
+        // Check if passwords match
+        if (user_details.password !== user_details.confirmPassword) {
+            throw {
+                status: 400,
+                message: "Passwords do not match"
+            };
+        }
+
 
         // add the new username
         let hash_password = bcrypt.hashSync(
             user_details.password,
             parseInt(process.env.bcrypt_saltRounds)
         );
+
         await DButils.execQuery(
             `INSERT INTO users (username, firstname, lastname, country, password, email, profilePic) 
         VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
@@ -48,6 +72,7 @@ router.post("/Register", async (req, res, next) => {
         next(error);
     }
 });
+
 
 
 router.post("/Login", async (req, res, next) => {

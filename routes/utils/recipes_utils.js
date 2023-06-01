@@ -19,7 +19,6 @@ async function getRecipeInformation(recipe_id) {
 }
 
 
-
 async function getRecipeDetails(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
@@ -53,10 +52,9 @@ function extractPreviewRecipeDetails(recipes_info){
         let data = recipe_info;
         if(recipe_info.data){
             data=recipe_info.data
-
         }
         let{
-            id,
+            recipe_id,
             title,
             readyInMinutes,
             image,
@@ -69,7 +67,7 @@ function extractPreviewRecipeDetails(recipes_info){
             extendedIngredients,
         } = data;
         return {
-            id:id,
+            recipe_id:recipe_id,
             title: title,
             readyInMinutes: readyInMinutes,
             image: image,
@@ -89,19 +87,20 @@ async function getRandomThreeRecipes() {
     return extractPreviewRecipeDetails(randomRecipes.data.recipes)
 }
 
-async function getRecipesPreview(recipe_id_array) {
-    results = [];
-    console.log(recipe_id_array)
-    for (index = 0; index < recipe_id_array.length; index++) {
-        console.log(recipe_id_array[index]);
-        results.push(await getRecipeDetails(recipe_id_array[index]));
+async function getRecipesPreview(recipeIds_array) {
+    let results = [];
+    console.log(recipeIds_array)
+    for (let index = 0; index < recipeIds_array.length; index++) {
+        console.log(recipeIds_array[index]);
+        results.push(await getRecipeDetails(recipeIds_array[index]));
     }
     return results;
 }
 
+
 exports.getRecipeDetails = getRecipeDetails;
 exports.getRandomThreeRecipes = getRandomThreeRecipes;
 exports.extractPreviewRecipeDetails = extractPreviewRecipeDetails;
-
+exports.getRecipesPreview = getRecipesPreview;
 
 
