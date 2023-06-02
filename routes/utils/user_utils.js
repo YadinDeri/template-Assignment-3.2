@@ -18,6 +18,10 @@ async function getFavoriteRecipes(user_id) {
 }
 
 //------------------------------
+async function getLast3Watch(user_id){
+    const Last3Watch = await DButils.execQuery(`select History_Watch_R1,History_Watch_R2,History_Watch_R3 from user_last_3_watch where user_id='${user_id}'`);
+    return Last3Watch;
+}
 
 async function Update_User_last_3_watch(user_id, recipe_id) {
     const DB_ans = await DButils.execQuery(`select * from user_last_3_watch where user_id='${user_id}'`);
@@ -67,9 +71,6 @@ async function addNewRecipe(user_id, recipe_id, title, readyInMinutes, image, po
         console.log(user_id);
     }
 
-    console.log("user_iddddddddddddddddd");
-    console.log(user_id);
-
     await DButils.execQuery(`INSERT INTO user_created_recipes (user_id, recipe_id)
     VALUES ('${user_id}', '${recipe_id}')`);
 }
@@ -79,3 +80,6 @@ async function addNewRecipe(user_id, recipe_id, title, readyInMinutes, image, po
 exports.markAsFavorite = markAsFavorite;
 exports.addNewRecipe = addNewRecipe
 exports.getFavoriteRecipes = getFavoriteRecipes;
+exports.getLast3Watch=getLast3Watch;
+exports.Update_User_last_3_watch=Update_User_last_3_watch;
+exports.get_user_Last3Watch=get_user_Last3Watch;
