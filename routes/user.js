@@ -4,6 +4,7 @@ const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipes_utils = require("./utils/recipes_utils");
 
+router.get("/userMessage", (req, res) => res.send("Hello, i'm in user web"));
 /**
  * Authenticate all incoming requests by middleware
  */
@@ -24,13 +25,13 @@ router.use(async function (req, res, next) {
 /**
  * This path gets body with recipeId and save this recipe in the favorites list of the logged-in user
  */
-router.post('/addFavoriteReciped', async (req,res,next) => {
+router.post('/addFavoriteReciped/:recipe_id', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    const recipe_id = req.body.recipe_id;
+    const recipe_id = req.params.recipe_id;
     await user_utils.markAsFavorite(user_id,parseInt(recipe_id));
     res.status(200).send("The Recipe successfully saved as favorite");
-    } catch(error){
+  } catch(error){
     next(error);
   }
 })
@@ -48,7 +49,7 @@ router.get('/favorites', async (req,res,next) => {
     favorite_recipes = await recipes_utils.getRecipesPreview(recipeIds_array);
     res.status(200).send(favorite_recipes);
   } catch(error){
-    next(error); 
+    next(error);
   }
 });
 
@@ -74,11 +75,19 @@ router.post('/createRecipe', async (req,res,next)=>{
 
 })
 
+router.get('/allRecipes', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const recipesToReturn = await user_utils.get_all_Recipecs(user_id)
+    res.status(200).send(recipesToReturn);
+  } catch(error){
+    next(error);
+  }
+});
 router.get('/user_last_3_watch', async (req,res,next) => {
   try{
-
     const user_id = req.session.user_id;
-    const results = await user_utils.getLast3Watch(user_id);
+    const results =  user_utils.getLast3Watch(user_id);
     const results2=await user_utils.get_user_Last3Watch(results);
     res.status(200).send(results2);
   } catch(error){
@@ -97,4 +106,5 @@ router.post('/user_watched_recipe', async (req,res,next) => {
     next(error);
   }
 });
+
 module.exports = router;
