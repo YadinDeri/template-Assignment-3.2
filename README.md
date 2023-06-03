@@ -11,10 +11,11 @@ This is the backend for our Recipe website, responsible for handling the server-
 - User management
 
 ## 💡 Technologies Used
+- JavaScript
 - Node.js
 - Express.js
 - MySQL
-- JavaScript
+- API spoonacular
 
 ## Prerequisites
 
