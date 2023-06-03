@@ -41,6 +41,8 @@ This is the backend for our Recipe website, responsible for handling the server-
 
 4. The backend server will be running on `http://localhost:3000`.
 
+## 📶 API Documentation
+
 ![image](https://github.com/YadinDeri/template-Assignment-3.2/assets/76015915/ea8b0af7-4747-4997-90e6-2ce80cebbfed)
 
 
