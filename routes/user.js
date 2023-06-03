@@ -29,8 +29,8 @@ router.post('/addFavoriteReciped/:recipe_id', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipe_id = req.params.recipe_id;
-    await user_utils.markAsFavorite(user_id,parseInt(recipe_id));
-    res.status(200).send("The Recipe successfully saved as favorite");
+    const result = await user_utils.markAsFavorite(user_id,parseInt(recipe_id));
+    res.status(200).send(result);
   } catch(error){
     next(error);
   }
@@ -67,8 +67,8 @@ router.post('/createRecipe', async (req,res,next)=>{
     const ingredients = req.body.ingredients;
     const instructions = req.body .instructions;
     const numOfDishes = req.body.numOfDishes;
-    await user_utils.addNewRecipe(user_id,recipe_id,title,readyInMinutes,image,popularity,vegan,vegetarian,glutenFree,ingredients,instructions,numOfDishes);
-    res.status(200).send("The Recipe successfully added");
+    const result = await user_utils.addNewRecipe(user_id,recipe_id,title,readyInMinutes,image,popularity,vegan,vegetarian,glutenFree,ingredients,instructions,numOfDishes);
+    res.status(200).send(result);
   } catch(error){
     next(error);
   }

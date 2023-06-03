@@ -36,7 +36,7 @@ router.get("/search/query/:searchQuery/amount/:num",async (req,res,next)=>{
   search_params.addRecipeInformation=true;
   search_params.apiKey = process.env.spooncular_apiKey;
   //give a defualt num
-  if(num != 5 && num != 10 && num != 15){
+  if(num !== 5 && num !== 10 && num !== 15){
     search_params.number = 5;
   }
   search_utils.extractQueryParams(req.query,search_params)

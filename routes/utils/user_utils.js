@@ -2,18 +2,31 @@ const DButils = require("./DButils");
 const recipes_utils = require("./recipes_utils");
 
 async function markAsFavorite(user_id, recipe_id) {
-
     const existingFavorites = await DButils.execQuery(`SELECT recipe_ids FROM FavoriteRecipes WHERE user_id = '${user_id}'`);
-    let prevlist = existingFavorites[0].recipe_ids[0].id
-    let list = JSON.stringify(prevlist);
-    list = JSON.parse(list)
-    list.push(recipe_id)
-    JSON.stringify(list)
-    existingFavorites[0].recipe_ids[0].id = list
-    await DButils.execQuery(`UPDATE FavoriteRecipes SET recipe_ids = '${JSON.stringify(existingFavorites[0].recipe_ids)}' WHERE user_id = '${user_id}'`);
-    console.log(JSON.stringify(existingFavorites[0].recipe_ids))
+    let prevlist;
 
+    if (existingFavorites && existingFavorites.length > 0) {
+        prevlist = existingFavorites[0].recipe_ids;
+        let list = JSON.parse(JSON.stringify(prevlist));
+        // Check if recipe_id already exists in the list
+        if (list.includes(recipe_id)) {
+            return "Recipe is already a favorite";
+        } else {
+            console.log("eden")
+            list.push(recipe_id);
+            await DButils.execQuery(`UPDATE FavoriteRecipes SET recipe_ids = '${JSON.stringify(list)}' WHERE user_id = '${user_id}'`);
+            return "Recipe successfully added as favorite";
+        }
+    } else {
+        prevlist = [];
+        let list = JSON.parse(JSON.stringify(prevlist));
+        list.push(recipe_id);
+        await DButils.execQuery(`INSERT INTO FavoriteRecipes (user_id, recipe_ids) VALUES ('${user_id}', '${JSON.stringify(list)}')`);
+        return "Recipe successfully added as favorite";
+    }
 }
+
+
 
 async function getFavoriteRecipes(user_id) {
     return await DButils.execQuery(`select recipe_ids from FavoriteRecipes where user_id='${user_id}'`);
@@ -78,25 +91,43 @@ async function get_all_Recipecs(user_id) {
 
 async function addNewRecipe(user_id, recipe_id, title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree, ingredients, instructions, numOfDishes) {
     if (!Number.isInteger(user_id)) {
-        user_id = parseInt(user_id);
-        console.log(user_id);
+        console.log("user_id isn't good");
         return;
     }
-    await DButils.execQuery(`insert into recipes (recipe_id, title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree, ingredients, instructions, numOfDishes)
-    VALUES ('${recipe_id}', '${title}', '${readyInMinutes}', '${image}', '${popularity}', '${vegan}', '${vegetarian}', '${glutenFree}', '${ingredients}', '${instructions}', '${numOfDishes}')`);
 
+    const recipes = await DButils.execQuery(`SELECT recipe_id FROM recipes`);
+    const recipesId = recipes.map((recipe) => recipe.recipe_id);
 
-    const existingFavorites = await DButils.execQuery(`SELECT recipe_ids FROM user_created_recipes WHERE user_id = '${user_id}'`);
-    let prevlist = existingFavorites[0].recipe_ids[0].id
-    let list = JSON.stringify(prevlist);
-    list = JSON.parse(list)
-    list.push(recipe_id)
-    JSON.stringify(list)
-    existingFavorites[0].recipe_ids[0].id = list
-    await DButils.execQuery(`UPDATE user_created_recipes SET recipe_ids = '${JSON.stringify(existingFavorites[0].recipe_ids)}' WHERE user_id = '${user_id}'`);
-    //console.log(JSON.stringify(existingFavorites[0].recipe_ids))
+    if (recipesId.includes(recipe_id)) {
+        return "Recipe is already created";
+    } else {
+        await DButils.execQuery(`INSERT INTO recipes (recipe_id, title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree, ingredients, instructions, numOfDishes)
+      VALUES ('${recipe_id}', '${title}', '${readyInMinutes}', '${image}', '${popularity}', '${vegan}', '${vegetarian}', '${glutenFree}', '${ingredients}', '${instructions}', '${numOfDishes}')`);
 
+        const existingFavorites = await DButils.execQuery(`SELECT recipe_ids FROM user_created_recipes WHERE user_id = '${user_id}'`);
+        let prevlist;
+
+        if (existingFavorites && existingFavorites.length > 0) {
+            prevlist = existingFavorites[0].recipe_ids;
+            let list = JSON.parse(JSON.stringify(prevlist));
+
+            if (list.includes(recipe_id)) {
+                return "Recipe is already a favorite";
+            } else {
+                list.push(recipe_id);
+                await DButils.execQuery(`UPDATE user_created_recipes SET recipe_ids = '${JSON.stringify(list)}' WHERE user_id = '${user_id}'`);
+                return "Recipe successfully added";
+            }
+        } else {
+            prevlist = [];
+            let list = JSON.parse(JSON.stringify(prevlist));
+            list.push(recipe_id);
+            await DButils.execQuery(`INSERT INTO user_created_recipes (user_id, recipe_ids) VALUES ('${user_id}', '${JSON.stringify(list)}')`);
+            return "Recipe successfully added";
+        }
+    }
 }
+
 
 
 
@@ -108,3 +139,4 @@ exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.get_user_Last3Watch = get_user_Last3Watch;
 exports.Update_User_last_3_watch = Update_User_last_3_watch;
 exports.get_all_Recipecs = get_all_Recipecs;
+exports.getLast3Watch = getLast3Watch;
