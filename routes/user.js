@@ -99,7 +99,6 @@ router.post('/user_watched_recipe', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipe_id = req.body.recipe_id;
-    // const results1 = await user_utils.Update_Table_user_indication_about_recipe(user_id,recipe_id);
     const results2 = await user_utils.Update_User_last_3_watch(user_id,recipe_id);
     res.status(200).send("The Recipe successfully update as an watched recipe");
   } catch(error){
