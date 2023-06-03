@@ -87,8 +87,8 @@ router.get('/allRecipes', async (req,res,next) => {
 router.get('/user_last_3_watch', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    const results =  user_utils.getLast3Watch(user_id);
-    const results2=await user_utils.get_user_Last3Watch(results);
+    const results = await user_utils.getLast3Watch(user_id);
+    const results2 = await user_utils.get_user_Last3Watch(results);
     res.status(200).send(results2);
   } catch(error){
     next(error);

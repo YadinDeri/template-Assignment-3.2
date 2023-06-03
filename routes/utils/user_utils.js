@@ -44,13 +44,12 @@ async function Update_User_last_3_watch(user_id, recipe_id) {
         const History_Watch_R1 = recipe_id;
         const History_Watch_R2 = 0;
         const History_Watch_R3 = 0;
-        Number(0);
         await DButils.execQuery(`insert into user_last_3_watch (user_id,History_Watch_R1,History_Watch_R2,History_Watch_R3) VALUES ('${user_id}', '${History_Watch_R1}', '${History_Watch_R2}','${History_Watch_R3}')`);
     } else {
         //let results=Object.values(JSON.parse(JSON.stringify(DB_ans)));
         let History_Watch_R1 = DB_ans[0].History_Watch_R1;
         let History_Watch_R2 = DB_ans[0].History_Watch_R2;
-        let History_Watch_R3 = DB_ans[0].History_Watch_R3;
+        let History_Watch_R3
         History_Watch_R3 = History_Watch_R2;
         History_Watch_R2 = History_Watch_R1;
         History_Watch_R1 = recipe_id;
